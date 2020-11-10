@@ -4,12 +4,12 @@ PX4 Firmware doesn't support external INS devices. In order to support SBG syste
 ![Diagram](../../assets/diagrams/sbg_diagram.png)
 
 ## What change in PX4 firmware ?
-A pull request has been sent to the official PX4 Firmware repository to add the SBG systems GPS device driver to the GPS driver of PX4 firmware. For now&nbsp; the&nbsp;fork that contains this project is available at&nbsp;[SBG-Systems/PX4_Firmware.git](https://github.com/SBG-Systems/Firmware.git).
+A pull request has been sent to the official PX4 Firmware repository to add the SBG systems GPS device driver to the GPS driver of PX4 firmware. For now  the fork that contains this project is available at [SBG-Systems/PX4_Firmware.git](https://github.com/SBG-Systems/Firmware.git).
 
-- The SBG systems GPS device driver is based on the SBG communication protocol, which is sbgECom so the&nbsp;sbgECom library has been added to the PX4 Firmware as a library. ([commit/7093cd6193caf4a9e77837fd01f432069bd45e91](https://github.com/SBG-Systems/PX4_Firmware/commit/7093cd6193caf4a9e77837fd01f432069bd45e91)
-- SBG devices send lots of data that could not been handle initially by the GPS driver so&nbsp;the GPS driver has been modify to handle a serial connexion with a baud rate of 460800 or 921600 bauds.&nbsp;([commit/11f3a2d561610cc69ca6a50e3d484b78b3420c87](https://github.com/SBG-Systems/PX4_Firmware/commit/11f3a2d561610cc69ca6a50e3d484b78b3420c87))
-- To avoid data loss, fmu-v5 board configuration has been changed to use DMA.&nbsp;The user should configure his board in order to avoid this problem on the port used to communicate with the SBG systems device. ([commit/09389ee98ae9416cfccd88c6edd22edccb3724aa](https://github.com/SBG-Systems/PX4_Firmware/commit/09389ee98ae9416cfccd88c6edd22edccb3724aa))
-- The uorb topic Gps_dump has been added to the logged topics list. It is possible to extract incoming data from the SBG systems device with&nbsp;[pyulog](https://pypi.org/project/pyulog/)&nbsp;and post-process these data with Qinertia. ([commit/29322e8240e0196e29588a1c9f1b3d7aafecee72](https://github.com/SBG-Systems/PX4_Firmware/commit/29322e8240e0196e29588a1c9f1b3d7aafecee72))
+- The SBG systems GPS device driver is based on the SBG communication protocol, which is sbgECom so the sbgECom library has been added to the PX4 Firmware as a library. ([commit/7093cd6193caf4a9e77837fd01f432069bd45e91](https://github.com/SBG-Systems/PX4_Firmware/commit/7093cd6193caf4a9e77837fd01f432069bd45e91)
+- SBG devices send lots of data that could not been handle initially by the GPS driver sothe GPS driver has been modify to handle a serial connexion with a baud rate of 460800 or 921600 bauds. ([commit/11f3a2d561610cc69ca6a50e3d484b78b3420c87](https://github.com/SBG-Systems/PX4_Firmware/commit/11f3a2d561610cc69ca6a50e3d484b78b3420c87))
+- To avoid data loss, fmu-v5 board configuration has been changed to use DMA. The user should configure his board in order to avoid this problem on the port used to communicate with the SBG systems device. ([commit/09389ee98ae9416cfccd88c6edd22edccb3724aa](https://github.com/SBG-Systems/PX4_Firmware/commit/09389ee98ae9416cfccd88c6edd22edccb3724aa))
+- The uorb topic Gps_dump has been added to the logged topics list. It is possible to extract incoming data from the SBG systems device with [pyulog](https://pypi.org/project/pyulog/) and post-process these data with Qinertia. ([commit/29322e8240e0196e29588a1c9f1b3d7aafecee72](https://github.com/SBG-Systems/PX4_Firmware/commit/29322e8240e0196e29588a1c9f1b3d7aafecee72))
 
 ### Note:
 Some parameters of the sensor_gps topic published by the GPS driver are not provided by the SBG systems device and have been set to 0:
@@ -23,13 +23,12 @@ Some parameters of the sensor_gps topic published by the GPS driver are not prov
 - jamming_indicator
 
 ## PX4 Board configuration
-The serial port of the PX4 board&nbsp;used to communicate with the SBG Systems device must support 460800 or 921600 bauds to avoid data loss.
+The serial port of the PX4 board used to communicate with the SBG Systems device must support 460800 or 921600 bauds to avoid data loss.
 
 If this requirement is not met, the DMA controller can be configured to reduce the number of CPU interrupts and discharge transfers on DMA as suggest before.
 
 For example the board Pixhawk fmu-v5 has been configured to meet this requirement.
 
-See[commit/09389ee98ae9416cfccd88c6edd22edccb3724aa](https://github.com/SBG-Systems/PX4_Firmware/commit/09389ee98ae9416cfccd88c6edd22edccb3724aa).
 ## SBG systems device configuration
 The SBG systems device configuration depends on the application because PX4 Firmware only uses GPS data for Flight Control, so if post-processing is not required IMU data and system status are not required.
 ### Flight control requirement:
@@ -65,11 +64,11 @@ RTCM data can be encapsulated in the MAVLink message [GPS_RTCM_DATA](https://mav
 ## Work flow
 This demonstration has been made with a Holybro pixhawk 4 mini (based on Pixhawk FMUv5).
 
-The SBG systems device is an&nbsp;[ellipse-D](https://www.sbg-systems.com/products/ellipse-series/#ellipse-d_rtk_gnss_ins) and it has been configured for&nbsp;post-processing with Qinertia. The port A is connected to the PX4 autopilot with a baud rate of 921600 bauds and the RTCM has been assigned to the port A.
+The SBG systems device is an [ellipse-D](https://www.sbg-systems.com/products/ellipse-series/#ellipse-d_rtk_gnss_ins) and it has been configured for post-processing with Qinertia. The port A is connected to the PX4 autopilot with a baud rate of 921600 bauds and the RTCM has been assigned to the port A.
 ##" Compile the firmware
-The firmware used for this example is&nbsp;[SBG-Systems/PX4_Firmware.git](https://github.com/SBG-Systems/PX4_Firmware.git). It has been compiled for a px4_fmu-v5_default board and uploaded on the pixahwk 4 mini.
+The firmware used for this example is [SBG-Systems/PX4_Firmware.git](https://github.com/SBG-Systems/PX4_Firmware.git). It has been compiled for a px4_fmu-v5_default board and uploaded on the pixahwk 4 mini.
 
-If required follow this documentation to setting up a developer environment&nbsp;[dev.px4.io/master/en/setup/dev_env.html](https://dev.px4.io/master/en/setup/dev_env.html)&nbsp;and to upload the firmware&nbsp;[dev.px4.io/master/en/setup/building_px4.html#uploading-firmware-flashing-the-board](https://dev.px4.io/master/en/setup/building_px4.html#uploading-firmware-flashing-the-board).
+If required follow this documentation to setting up a developer environment [dev.px4.io/master/en/setup/dev_env.html](https://dev.px4.io/master/en/setup/dev_env.html) and to upload the firmware [dev.px4.io/master/en/setup/building_px4.html#uploading-firmware-flashing-the-board](https://dev.px4.io/master/en/setup/building_px4.html#uploading-firmware-flashing-the-board).
 ### Restart the gps driver
 The GPS driver should be restarted in order to set the baud rate at 921600 bauds and set the GPS port to /dev/ttyS0.
 ```bash
